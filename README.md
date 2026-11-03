@@ -55,7 +55,7 @@ The plugin keeps the original's name, `savvy-progress`, so its tools are still `
 
 - The row reads `Pip · Mod engineer`.
 
-- **Office** (`hooks/office.ts`): the `▦ Office` button at the top of the panel (desktop only) swaps the rows for a pixel crab campus. The building grows a room for every team that has a crab, three rooms to a floor, with a corridor and stairs on the left. The ground floor (Lobby, Café, Lounge) is always there, with a garden out front: a pond with a duck, a fountain, a picnic table, flower beds and lamp posts. A floor that isn't full gets a Gym or a Greenhouse.
+- **Office** (`hooks/office.ts`): the `▦ Office` button at the top of the panel (desktop app and VS Code) swaps the rows for a pixel crab campus. The building grows a room for every team that has a crab, three rooms to a floor, with a corridor and stairs on the left. The ground floor (Lobby, Café, Lounge) is always there, with a garden out front: a pond with a duck, a fountain, a picnic table, flower beds and lamp posts. A floor that isn't full gets a Gym or a Greenhouse.
 
   | Costume | Room | Desks and errands |
   | --- | --- | --- |

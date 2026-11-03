@@ -1609,8 +1609,10 @@ export const register: Register = (on, options) => {
     const p: Panel = await read($, panel)
     const roster: RosterCrab[] = await read($, crabs)
     const lead: Lead = await read($, leadAtom)
+    // The desktop app and VS Code draw pictures: the crab rows and the office.
+    const isDrawn = e.surface === 'desktop' || e.surface === 'vscode'
     // The office redraws as agents change, not on the clock's tick: its scene is big, and its crabs move on their own.
-    const isOfficeDrawn = p.view === 'office' && e.surface === 'desktop'
+    const isOfficeDrawn = p.view === 'office' && isDrawn
     const at = Math.max(isOfficeDrawn ? await $.clock.now() : await read($, now), ...list.map(a => a.startedAt), 0)
 
     const running = list.filter(a => a.status === 'running').reverse()
@@ -1639,7 +1641,7 @@ export const register: Register = (on, options) => {
     const isEmpty = list.length === 0 && planned.length === 0
     const summary = `≈${fmtCost(t.cost)}, ${fmtTokens(t.tokens)} ${s.tokensWord}, ${fmtTime(t.time)}`
 
-    if (e.surface === 'desktop' && 'Svg' in ui) {
+    if (isDrawn && 'Svg' in ui) {
       const { Svg } = ui
       const W = Math.max(240, Math.min(900, (e.props.bodyColumns || 40) * 8 - 8))
       const section = (key: string, text: string) => (

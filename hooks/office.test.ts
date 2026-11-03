@@ -31,6 +31,22 @@ test('desktop: the view button switches the panel to the office and back', async
   expect(await ui.find({ text: /Planned · 2/ })).toBeDefined()
 })
 
+test('vscode: the crab rows and the office are drawn there too', async ($, on) => {
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  mock.clock(on, { now: Date.parse('2026-11-04T10:00:00Z') })
+  await $.tool.call({ tool: PROGRESS, title: 'Ship it', phase: 'delegate', tasks: [{ title: 'Write the parser', tier: 'careful' }] } as never)
+
+  const ui = await $.ui.mount({ plugin: PLUGIN, surface: 'vscode', component: 'Pane', requestId: 'savvy-agents', props: pane })
+  const alts = (await ui.findAll({ type: 'Svg' })).map(el => String(el.props.alt))
+  expect(alts).toContain('Claude · Lead: Waiting for you')
+
+  await ui.press({ key: 'view' })
+  expect((await ui.find({ key: 'view' }))?.props.label).toBe('☰ Agents')
+  const office = (await ui.findAll({ type: 'Svg' })).map(el => String(el.props.source)).join('')
+  expect(office).toContain('Lobby')
+  expect(office).toContain('>Claude<')
+})
+
 test('terminal: no office button where there is no drawing', async $ => {
   const ui = await $.ui.mount({ plugin: PLUGIN, surface: 'terminal', component: 'Pane', requestId: 'savvy-agents', props: pane })
   expect(await ui.find({ key: 'view' })).toBeUndefined()
