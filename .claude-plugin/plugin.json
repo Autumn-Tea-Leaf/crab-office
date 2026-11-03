@@ -1,0 +1,43 @@
+{
+  "name": "savvy-progress",
+  "version": "1.4.0",
+  "description": "Progress bar above the prompt for /savvy-flow, plus an agents panel (/agents-info): running, finished and planned subagents with model, task progress, context, cost and time. Crab office edition, a fork of johnnyvizz's savvy-progress: a costume and a name per role, and a pixel office where the agents work, with a day and night cycle.",
+  "author": {
+    "name": "johnnyvizz",
+    "url": "https://github.com/johnnyvizz"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "language": {
+      "type": "string",
+      "title": "Panel language",
+      "description": "auto follows Claude Code's language setting, then the system locale; en, ru or he (Hebrew, drawn right to left)",
+      "default": "auto",
+      "options": [
+        "auto",
+        "en",
+        "ru",
+        "he"
+      ]
+    },
+    "autoOpen": {
+      "type": "string",
+      "title": "Open the agents panel",
+      "description": "savvy: when a savvy-flow worker starts or a plan is reported; any: also when any other subagent starts",
+      "default": "savvy",
+      "options": [
+        "savvy",
+        "any"
+      ]
+    },
+    "leadName": {
+      "type": "string",
+      "title": "Lead crab's name",
+      "description": "The name of the main session's crab, at the top of the list and at the office's front desk",
+      "default": "Claude"
+    }
+  },
+  "homepage": "https://github.com/Autumn-Tea-Leaf/crab-office",
+  "repository": "https://github.com/Autumn-Tea-Leaf/crab-office",
+  "license": "MIT"
+}
