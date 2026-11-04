@@ -19,6 +19,7 @@ const panel = atom({ plugin: 'savvy-progress', key: 'panel' } as const, {
   isDoneCollapsed: false,
   autoOpenedFor: '',
   view: 'list',
+  isStartOpened: false,
 })
 const now = atom({ plugin: 'savvy-progress', key: 'now' } as const, 0)
 // The persistent crab roster, mirrored for drawing (planned rows look up their crab here).
@@ -62,7 +63,7 @@ type Lang = 'en' | 'ru' | 'he'
 
 const STRINGS = {
   en: {
-    pane: 'Agents',
+    pane: 'Crab Office',
     cost: 'Cost',
     tokens: 'Tokens',
     time: 'Time',
@@ -80,8 +81,8 @@ const STRINGS = {
     isRunning: 'running',
     isFinished: 'finished',
     isPlanned: 'planned',
-    opened: 'Agents panel opened.',
-    closed: 'Agents panel closed.',
+    opened: 'Crab Office opened.',
+    closed: 'Crab Office closed.',
     done: 'Done',
     plan: 'Plan',
     design: 'Design',
@@ -106,7 +107,7 @@ const STRINGS = {
     verbs: { read: 'Reading', edit: 'Editing', write: 'Writing', search: 'Searching', find: 'Finding', run: 'Running', fetch: 'Fetching', delegate: 'Delegating', use: 'Using' },
   },
   ru: {
-    pane: 'Агенты',
+    pane: 'Офис крабов',
     cost: 'Стоимость',
     tokens: 'Токены',
     time: 'Время',
@@ -124,8 +125,8 @@ const STRINGS = {
     isRunning: 'работает',
     isFinished: 'завершён',
     isPlanned: 'запланирована',
-    opened: 'Панель агентов открыта.',
-    closed: 'Панель агентов закрыта.',
+    opened: 'Офис крабов открыт.',
+    closed: 'Офис крабов закрыт.',
     done: 'Готово',
     plan: 'План',
     design: 'Дизайн',
@@ -150,7 +151,7 @@ const STRINGS = {
     verbs: { read: 'Читает', edit: 'Правит', write: 'Пишет', search: 'Ищет', find: 'Ищет файлы', run: 'Запускает', fetch: 'Загружает', delegate: 'Поручает', use: 'Использует' },
   },
   he: {
-    pane: 'סוכנים',
+    pane: 'משרד הסרטנים',
     cost: 'עלות',
     tokens: 'טוקנים',
     time: 'זמן',
@@ -168,8 +169,8 @@ const STRINGS = {
     isRunning: 'פועל',
     isFinished: 'הסתיים',
     isPlanned: 'מתוכנן',
-    opened: 'חלונית הסוכנים נפתחה.',
-    closed: 'חלונית הסוכנים נסגרה.',
+    opened: 'משרד הסרטנים נפתח.',
+    closed: 'משרד הסרטנים נסגר.',
     done: 'הושלם',
     plan: 'תכנון',
     design: 'עיצוב',
@@ -1231,18 +1232,38 @@ const activityOf = (e: Record<string, unknown>): string => {
   return clip(text.trim(), 48)
 }
 
-// Opens the agents pane, or closes it when it is up; true when it ends up open.
+// Opens the Crab Office pane, or brings it forward from behind another tab.
+async function openPane($: EngineInterface): Promise<void> {
+  const at = await $.clock.now()
+  await update($, now, () => at)
+  await $.ui.open({ id: PANE, title: tr().pane })
+}
+
+// Opens the pane, or closes it when it is up; true when it ends up open.
 async function togglePane($: EngineInterface): Promise<boolean> {
   const isOpen = (await $.ui.panes()).some(p => p.id === PANE)
   if (isOpen) {
     await $.ui.close({ id: PANE })
     return false
   }
-  const at = await $.clock.now()
-  await update($, now, () => at)
-  await $.ui.open({ id: PANE, title: tr().pane })
+  await openPane($)
   return true
 }
+
+// `/crab-office` and `/agents-info`: no argument toggles the pane; `open` opens it without toggling.
+async function paneCommand($: EngineInterface, args: string | undefined): Promise<{ text: string }> {
+  if ((args ?? '').trim() === 'open') {
+    await openPane($)
+    return { text: tr().opened }
+  }
+  const isOpen = await togglePane($)
+  return { text: isOpen ? tr().opened : tr().closed }
+}
+
+// "open crab office", typed at the prompt: optionally after a name ("Claude, ..."), with "please", "the" or "my".
+const OPEN_PHRASE = /^(?:[\p{L}]+[,!]?\s+)?(?:please\s+)?(?:open|show)\s+(?:up\s+)?(?:the\s+|my\s+)?crab[\s-]?office(?:\s+please)?[\s.!]*$/iu
+// Prompts no person typed: these pass through whatever they say.
+const NOT_TYPED = new Set(['peer', 'task-notification', 'scheduled-trigger'])
 
 async function autoOpen($: EngineInterface, key: string): Promise<void> {
   const p = await read($, panel)
@@ -1364,9 +1385,25 @@ export const register: Register = (on, options) => {
       isDeferred: false,
     })
     await $.command.register({
+      name: 'crab-office',
+      description: 'Show or hide the Crab Office: the subagents, running, finished and planned, and the pixel office where they work',
+    })
+    await $.command.register({
       name: 'agents-info',
       description: 'Show or hide the panel of subagents: running, finished and planned, with model, context, cost and time',
     })
+
+    // A new chat opens the Crab Office once; a reload of the mod in the same chat does not open it again.
+    if (options.openAtStart !== 'no') {
+      const p = await read($, panel)
+      if (!p.isStartOpened) {
+        await update($, panel, prev => ({ ...prev, isStartOpened: true }))
+        const at = await $.clock.now()
+        await update($, now, () => at)
+        // Not awaited: with no surface attached yet, the pane waits for one.
+        void $.ui.open({ id: PANE, title: tr().pane })
+      }
+    }
 
     // Ticks the running agents' clocks; quiet when nothing runs.
     $.clock.every(1000, () => {
@@ -1380,16 +1417,14 @@ export const register: Register = (on, options) => {
     return started
   })
 
-  on('command.run', { command: 'agents-info' }, async ($, e) => {
-    // `/agents-info open` opens the panel, or brings it forward from behind another tab, without toggling it.
-    if ((e.args ?? '').trim() === 'open') {
-      const at = await $.clock.now()
-      await update($, now, () => at)
-      await $.ui.open({ id: PANE, title: tr().pane })
-      return { text: tr().opened }
-    }
-    const isOpen = await togglePane($)
-    return { text: isOpen ? tr().opened : tr().closed }
+  on('command.run', { command: 'crab-office' }, ($, e) => paneCommand($, e.args))
+  on('command.run', { command: 'agents-info' }, ($, e) => paneCommand($, e.args))
+
+  // "open crab office" at the prompt opens the pane and goes no further: the model never gets it.
+  on('prompt.submit', async ($, e, next) => {
+    if (e.command || e.isMeta || NOT_TYPED.has(e.origin?.kind ?? '') || !OPEN_PHRASE.test(e.text.trim())) return next(e)
+    await openPane($)
+    return { drop: tr().opened }
   })
 
   on('tool.call', { tool: TOOL }, async ($, e) => {

@@ -76,6 +76,8 @@ export type Panel = {
   autoOpenedFor: string
   /** The pane's view: the list of rows, or the pixel office. Absent in state saved before the office. */
   view?: 'list' | 'office'
+  /** Set once this chat's start has opened the pane, so a reload does not open it again. Absent in state saved before. */
+  isStartOpened?: boolean
 }
 
 declare module 'claude-code' {

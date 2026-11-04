@@ -17,7 +17,7 @@ Answer `y` to add the marketplace, then pick a scope (user is the usual one). Fr
 The plugin keeps the original's name, `savvy-progress`, so its tools are still `mcp__savvy-progress__progress` and `mcp__savvy-progress__step`. If you have claude-kit's savvy-progress installed, disable it first so the two don't run side by side.
 
 - **Progress bar**: the flow's title, phase, accepted tasks out of planned, and a button with the crew size that opens the panel. It appears once something reports progress (savvy-flow does) or a `savvy-*` worker starts.
-- **Agents panel** (`/agents-info` toggles it; `/agents-info open` opens it or brings it forward without toggling): running, finished and planned subagents with model, effort, task progress, context, estimated cost and time. Working crabs walk, and each savvy tier animates its prop: the astronaut floats, the detective sweeps the magnifier, the engineer turns the wrench, the chef tosses the omelette, the racer runs with a fluttering flag. `prefers-reduced-motion` stops them.
+- **Crab Office panel**: it opens by itself when a chat starts. `/crab-office` toggles it, and `/crab-office open` opens it or brings it forward without toggling. Typing `open crab office` at the prompt opens it too, without sending anything to Claude. `/agents-info` still works the same way. The panel shows running, finished and planned subagents with model, effort, task progress, context, estimated cost and time. Working crabs walk, and each savvy tier animates its prop: the astronaut floats, the detective sweeps the magnifier, the engineer turns the wrench, the chef tosses the omelette, the racer runs with a fluttering flag. `prefers-reduced-motion` stops them.
 
 ## Role costumes and names
 
@@ -91,5 +91,7 @@ Cost is a rough estimate from token counts and a built-in per-model price table 
 ```
 
 `leadName`: the name of the main session's crab, `Claude` by default. Give it your own name for it, up to 24 characters.
+
+`openAtStart`: `yes` (default) or `no`. With `yes` every new chat opens the Crab Office; a reload of the mod does not open it again.
 
 `autoOpen`: `savvy` (default) or `any`. With `savvy` the panel opens by itself when a `savvy-*` worker starts or a plan is reported. With `any` it also opens, once per session, when any other subagent starts. `/agents-info` toggles it either way.

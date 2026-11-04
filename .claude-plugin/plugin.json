@@ -1,6 +1,6 @@
 {
   "name": "savvy-progress",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Progress bar above the prompt for /savvy-flow, plus an agents panel (/agents-info): running, finished and planned subagents with model, task progress, context, cost and time. Crab office edition, a fork of johnnyvizz's savvy-progress: a costume and a name per role, and a pixel office where the agents work, with a day and night cycle.",
   "author": {
     "name": "johnnyvizz",
@@ -28,6 +28,16 @@
       "options": [
         "savvy",
         "any"
+      ]
+    },
+    "openAtStart": {
+      "type": "string",
+      "title": "Open the Crab Office when a chat starts",
+      "description": "yes: every new chat opens the Crab Office; no: it opens only when asked, or by autoOpen",
+      "default": "yes",
+      "options": [
+        "yes",
+        "no"
       ]
     },
     "leadName": {
