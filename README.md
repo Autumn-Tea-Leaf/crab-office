@@ -1,6 +1,6 @@
-# savvy-progress (crab office edition)
+# Crab Office
 
-A Claude Code mod: a progress bar above the prompt and a live panel of subagents, with a pixel office where they work. Made for the savvy-flow skill, and useful with any subagents.
+A Claude Code mod: a live panel of your subagents beside the chat, with a pixel office where they work, and a progress bar above the prompt. The panel opens by itself in each new chat; `/crab-office` or typing `open crab office` opens it any time. Made for the savvy-flow skill, and useful with any subagents.
 
 Based on [savvy-progress](https://github.com/johnnyvizz/claude-kit/tree/main/plugins/savvy-progress) by [johnnyvizz](https://github.com/johnnyvizz), from [claude-kit](https://github.com/johnnyvizz/claude-kit), under the MIT license. This fork adds a costume and a name per role, the crab roster, the office view with its departments, the lead crab at the front desk, and the day and night cycle.
 
@@ -14,7 +14,7 @@ At the prompt of a Claude Code terminal session:
 
 Answer `y` to add the marketplace, then pick a scope (user is the usual one). From a shell: `claude plugin install savvy-progress --marketplace Autumn-Tea-Leaf/crab-office`. In the desktop app, where `/plugin` does not run: click + next to the prompt box, then Plugins, Add marketplace with `Autumn-Tea-Leaf/crab-office`, then Add plugin.
 
-The plugin keeps the original's name, `savvy-progress`, so its tools are still `mcp__savvy-progress__progress` and `mcp__savvy-progress__step`. If you have claude-kit's savvy-progress installed, disable it first so the two don't run side by side.
+Crab Office keeps the original's plugin id, `savvy-progress` (that is the name you install), so savvy-flow's progress reporting still works and its tools are still `mcp__savvy-progress__progress` and `mcp__savvy-progress__step`. If you have claude-kit's savvy-progress installed, disable it first so the two don't run side by side.
 
 - **Progress bar**: the flow's title, phase, accepted tasks out of planned, and a button with the crew size that opens the panel. It appears once something reports progress (savvy-flow does) or a `savvy-*` worker starts.
 - **Crab Office panel**: it opens by itself when a chat starts. `/crab-office` toggles it, and `/crab-office open` opens it or brings it forward without toggling. Typing `open crab office` at the prompt opens it too, without sending anything to Claude. `/agents-info` still works the same way. The panel shows running, finished and planned subagents with model, effort, task progress, context, estimated cost and time. Working crabs walk, and each savvy tier animates its prop: the astronaut floats, the detective sweeps the magnifier, the engineer turns the wrench, the chef tosses the omelette, the racer runs with a fluttering flag. `prefers-reduced-motion` stops them.

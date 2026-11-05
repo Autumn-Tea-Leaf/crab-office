@@ -1,7 +1,7 @@
 {
   "name": "savvy-progress",
-  "version": "1.5.0",
-  "description": "Progress bar above the prompt for /savvy-flow, plus an agents panel (/agents-info): running, finished and planned subagents with model, task progress, context, cost and time. Crab office edition, a fork of johnnyvizz's savvy-progress: a costume and a name per role, and a pixel office where the agents work, with a day and night cycle.",
+  "version": "1.5.1",
+  "description": "Crab Office: a live panel of your subagents beside the chat, with a pixel office where they work and a day and night cycle, plus a progress bar above the prompt for /savvy-flow. It opens with each new chat; /crab-office or typing \"open crab office\" opens it. A fork of johnnyvizz's savvy-progress, keeping its plugin id.",
   "author": {
     "name": "johnnyvizz",
     "url": "https://github.com/johnnyvizz"
