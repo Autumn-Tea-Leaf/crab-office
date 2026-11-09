@@ -16,7 +16,7 @@ Answer `y` to add the marketplace, then pick a scope (user is the usual one). Fr
 
 Crab Office keeps the original's plugin id, `savvy-progress` (that is the name you install), so savvy-flow's progress reporting still works and its tools are still `mcp__savvy-progress__progress` and `mcp__savvy-progress__step`. If you have claude-kit's savvy-progress installed, disable it first so the two don't run side by side.
 
-- **Progress bar**: the flow's title, phase, accepted tasks out of planned, and a button with the crew size that opens the panel. It appears once something reports progress (savvy-flow does) or a `savvy-*` worker starts.
+- **Progress bar**: it shows from the start of each chat, with the Crab Office. Until a flow reports, it reads "Crab Office" with Ready, or the session's agents done out of started. While a flow reports (savvy-flow does), it shows the flow's title, phase, accepted tasks out of planned, and a button with the crew size that opens the panel. Its ✕ hides it for the chat.
 - **Crab Office panel**: it opens by itself when a chat starts. `/crab-office` toggles it, and `/crab-office open` opens it or brings it forward without toggling. Typing `open crab office` at the prompt opens it too, without sending anything to Claude. `/agents-info` still works the same way. The panel shows running, finished and planned subagents with model, effort, task progress, context, estimated cost and time. Working crabs walk, and each savvy tier animates its prop: the astronaut floats, the detective sweeps the magnifier, the engineer turns the wrench, the chef tosses the omelette, the racer runs with a fluttering flag. `prefers-reduced-motion` stops them.
 
 ## Role costumes and names
@@ -91,6 +91,8 @@ Cost is a rough estimate from token counts and a built-in per-model price table 
 ```
 
 `leadName`: the name of the main session's crab, `Claude` by default. Give it your own name for it, up to 24 characters.
+
+`barAtStart`: `yes` (default) or `no`. With `no` the bar shows only while a flow reports progress.
 
 `openAtStart`: `yes` (default) or `no`. With `yes` every new chat opens the Crab Office; a reload of the mod does not open it again.
 

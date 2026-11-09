@@ -64,6 +64,7 @@ type Lang = 'en' | 'ru' | 'he'
 const STRINGS = {
   en: {
     pane: 'Crab Office',
+    ready: 'Ready',
     cost: 'Cost',
     tokens: 'Tokens',
     time: 'Time',
@@ -108,6 +109,7 @@ const STRINGS = {
   },
   ru: {
     pane: 'Офис крабов',
+    ready: 'Готов',
     cost: 'Стоимость',
     tokens: 'Токены',
     time: 'Время',
@@ -152,6 +154,7 @@ const STRINGS = {
   },
   he: {
     pane: 'משרד הסרטנים',
+    ready: 'מוכן',
     cost: 'עלות',
     tokens: 'טוקנים',
     time: 'זמן',
@@ -272,6 +275,7 @@ const merge = (prev: Flow | null, input: ProgressInput): Flow => {
 
 const label = (f: Flow): string => {
   const s = tr()
+  if (f.isIdle) return f.total ? `${s.agentsView} ${f.done}/${f.total}` : s.ready
   if (f.isFinished) return s.done
   if (f.phase === 'plan') return s.plan
   if (f.phase === 'design') return s.design
@@ -1908,8 +1912,18 @@ export const register: Register = (on, options) => {
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    const f = await read($, flow)
-    if (f === null || e.props.hasSurvey) return next(e)
+    if (e.props.hasSurvey) return next(e)
+    const list = await read($, agents)
+    // No flow reporting: the bar still shows with the Crab Office, counting the session's agents.
+    const reported = await read($, flow)
+    let f: Flow
+    if (reported !== null) f = reported
+    else {
+      const p = await read($, panel)
+      if (options.barAtStart === 'no' || p.isBarHidden) return next(e)
+      const running = list.filter(a => a.status === 'running').length
+      f = { title: tr().pane, total: list.length, done: list.length - running, running, phase: 'delegate', isFinished: false, tasks: [], isIdle: true }
+    }
     // Draw this row with the other mods' bands beneath it. Claude Code's own placeholder ({ type: 'engine' }) is
     // never nested: the desktop drops a band that nests it.
     const drawn = await Promise.resolve(next(e)).catch(() => null)
@@ -1917,7 +1931,6 @@ export const register: Register = (on, options) => {
 
     const ui = $.ui.resolve(e)
     const { Box, Text, Button } = ui
-    const list = await read($, agents)
     const crew = list.length + plannedOf(f, list).length
     const isWorking = list.some(a => a.status === 'running')
     const crewButton = (
@@ -1930,7 +1943,7 @@ export const register: Register = (on, options) => {
         label="✕"
         plain
         role="dismiss"
-        onPress={() => update($, flow, () => null)}
+        onPress={() => (f.isIdle ? update($, panel, prev => ({ ...prev, isBarHidden: true })) : update($, flow, () => null))}
       />
     )
 

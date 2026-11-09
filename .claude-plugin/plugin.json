@@ -1,6 +1,6 @@
 {
   "name": "savvy-progress",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "Crab Office: a live panel of your subagents beside the chat, with a pixel office where they work and a day and night cycle, plus a progress bar above the prompt for /savvy-flow. It opens with each new chat; /crab-office or typing \"open crab office\" opens it. A fork of johnnyvizz's savvy-progress, keeping its plugin id.",
   "author": {
     "name": "johnnyvizz",
@@ -34,6 +34,16 @@
       "type": "string",
       "title": "Open the Crab Office when a chat starts",
       "description": "yes: every new chat opens the Crab Office; no: it opens only when asked, or by autoOpen",
+      "default": "yes",
+      "options": [
+        "yes",
+        "no"
+      ]
+    },
+    "barAtStart": {
+      "type": "string",
+      "title": "Show the progress bar from the start",
+      "description": "yes: the bar above the prompt shows from the start of each chat, counting the agents; no: it shows only while a flow reports progress",
       "default": "yes",
       "options": [
         "yes",

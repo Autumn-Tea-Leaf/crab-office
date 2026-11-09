@@ -14,6 +14,8 @@ export type Flow = {
   phase: Phase
   isFinished: boolean
   tasks: PlannedTask[]
+  /** Never stored: the bar drawn when no flow is reporting, counting the session's agents. */
+  isIdle?: boolean
 }
 
 export type AgentStatus = 'running' | 'done' | 'failed'
@@ -78,6 +80,8 @@ export type Panel = {
   view?: 'list' | 'office'
   /** Set once this chat's start has opened the pane, so a reload does not open it again. Absent in state saved before. */
   isStartOpened?: boolean
+  /** The idle bar's ✕ was pressed: it stays hidden for this chat; a flow that reports still shows its own bar. */
+  isBarHidden?: boolean
 }
 
 declare module 'claude-code' {
